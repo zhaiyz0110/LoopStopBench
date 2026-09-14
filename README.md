@@ -17,7 +17,7 @@ Under the primary setting (`lambda=0.005`, generation-only token cost,
 `stop_at_last`), four of five family-specific targets exclude a material
 effect. Code-8B total regret remains inconclusive. See
 [`result/AUTHORITATIVE_RESULTS.md`](result/AUTHORITATIVE_RESULTS.md) for the
-frozen numbers and their allowed interpretation.
+frozen numbers and reporting constraints.
 
 ## Repository contents
 
@@ -75,8 +75,8 @@ Each JSONL row is one round. The schema is defined in
 [`src/loopstop/schema.py`](src/loopstop/schema.py) and summarized in
 [`data/README.md`](data/README.md).
 
-The nine JSONL files total approximately 281.8 MiB and are intentionally not
-stored as ordinary Git objects. Download the versioned trajectory archive from
+The nine JSONL files total approximately 281.8 MiB and are distributed outside
+the Git repository. Download the versioned trajectory archive from
 the repository's [GitHub Releases](https://github.com/zhaiyz0110/LoopStopBench/releases),
 extract the files directly into `data/`, and verify them against
 [`data/DATA_MANIFEST.sha256`](data/DATA_MANIFEST.sha256). The release asset for
@@ -108,9 +108,8 @@ provenance. Every command that analyzes code must therefore include:
 --exclude-tasks Mbpp_793
 ```
 
-The corrected code result files begin with `result/p0_excl_`. Pre-correction
-code rows remain in some mixed historical CSV files and must not be reported.
-The authoritative mapping is in
+The corrected code result files begin with `result/p0_excl_`. Some mixed CSV
+files retain pre-correction code rows; use the file mapping in
 [`result/RESULT_MANIFEST.md`](result/RESULT_MANIFEST.md).
 
 ## Reproduce the primary analysis

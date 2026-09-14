@@ -1,8 +1,7 @@
 # Third-Party Notices
 
-This file records the principal third-party resources used to construct or
-evaluate LoopStopBench. It is an attribution and provenance record, not legal
-advice and not a replacement for the original license texts.
+This file lists third-party resources used to construct or evaluate
+LoopStopBench. Refer to the original license texts for their full terms.
 
 No model weights, complete upstream benchmark distributions, or arXiv source
 corpus are redistributed in this repository. The frozen trajectory files may
@@ -66,8 +65,8 @@ benchmark license, and local law before redistributing or reusing trajectories.
 ## Software dependencies
 
 Python packages and container images are installed as independent dependencies
-and remain under their own licenses. The authoritative dependency declarations
-are `pyproject.toml` and the files under `docker/`. In particular, vLLM,
+and remain under their own licenses. Dependencies are declared in
+`pyproject.toml` and the files under `docker/`. In particular, vLLM,
 PyTorch, scikit-learn, NumPy, pandas, SciPy, PyYAML, and their transitive
 dependencies are not relicensed by LoopStopBench.
 

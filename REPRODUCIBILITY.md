@@ -62,17 +62,16 @@ data/m2_writing_mid_judged.jsonl
 data/qa_m2.jsonl
 ```
 
-Large JSONL files are distributed as a separate release artifact rather than
-ordinary Git objects. After downloading the trajectory bundle, verify it
+Large JSONL files are distributed as a separate release artifact. After
+downloading the trajectory bundle, verify it
 against `data/RELEASE_ASSET.sha256`, extract it, and then verify its nine JSONL
 files against `data/DATA_MANIFEST.sha256`. Place the JSONL files directly under
 `data/` before running the commands below.
 
 All final code analyses exclude task `Mbpp_793` because its cached hidden-test
-set is empty. The raw archives retain the affected trajectories for auditability.
-The corrected samples are 350 trajectories/117 tasks for code-8B and 351
-trajectories/117 tasks for code-32B. Do not silently delete the records; pass
-the exclusion explicitly to analysis commands.
+set is empty. The raw archives retain the affected trajectories. The corrected
+samples are 350 trajectories/117 tasks for code-8B and 351 trajectories/117
+tasks for code-32B. Pass the exclusion explicitly to analysis commands.
 
 ## 3. Primary analysis
 
@@ -113,8 +112,8 @@ uses total regret as its formal target; writing and QA use recoverable gain.
 
 Repeat the command above with `--lambda 0`, `--lambda 0.005`, and
 `--lambda 0.02`, changing `--out` for each run. Keep `--exclude-tasks
-Mbpp_793` in every run. The authoritative verdict matrix and exact endpoints
-are in `result/AUTHORITATIVE_RESULTS.md`.
+Mbpp_793` in every run. The verdict matrix and exact endpoints are in
+`result/AUTHORITATIVE_RESULTS.md`.
 
 ## 5. Model-class ladder
 
@@ -225,7 +224,7 @@ the public files alone.
 
 ## 11. Result provenance and limitations
 
-- `result/AUTHORITATIVE_RESULTS.md` is the numerical source of truth.
+- Use `result/AUTHORITATIVE_RESULTS.md` for manuscript numbers.
 - `result/RESULT_MANIFEST.md` maps claims to released files and identifies
   superseded rows.
 - Bootstrap resampling is clustered by task, while reported utility is the
