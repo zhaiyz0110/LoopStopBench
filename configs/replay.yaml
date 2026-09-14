@@ -1,0 +1,32 @@
+# Offline replay configuration for stopping policies.
+# Candidate parameters are fixed before evaluation. Outer cross-fitting selects
+# candidates on training tasks and reports utility on held-out tasks for each lambda.
+
+lambdas: [0.0, 0.005, 0.02]     # Quality only, primary setting, and cost-sensitive.
+modes: [stop_at_last, stop_and_select]
+final_neq_best_delta: 0.05
+
+policies:
+  # S1: fixed horizons.
+  - {type: fixed_n, label: S1-n1,  params: {n: 1}}
+  - {type: fixed_n, label: S1-n3,  params: {n: 3}}
+  - {type: fixed_n, label: S1-n5,  params: {n: 5}}
+  - {type: fixed_n, label: S1-n8,  params: {n: 8}}
+  - {type: fixed_n, label: S1-n10, params: {n: 10}}
+  - {type: fixed_n, label: S1-n15, params: {n: 15}}
+  # S2: verifier pass.
+  - {type: verifier_pass, label: S2, params: {score_threshold: 0.999}}
+  # S3: critic approval for writer-critic loops.
+  - {type: critic_approve, label: S3}
+  # S4: semantic convergence.
+  - {type: semantic_convergence, label: S4, params: {eps: 0.02, patience: 2}}
+  # S5: self-confidence threshold.
+  - {type: confidence_threshold, label: S5, params: {tau: 0.9}}
+  # S6: score plateau.
+  - {type: score_plateau, label: S6, params: {eps: 0.01, patience: 2}}
+  # S7: conjunction of S4 and S6.
+  - {type: dual_signal, label: S7, params: {emb_eps: 0.02, score_eps: 0.01, patience: 2}}
+  # S8: linear reward forecast.
+  - {type: reward_prediction, label: S8, params: {window: 4, threshold: 0.005}}
+  # Optional VOI estimator; enable after training a checkpoint.
+  # - {type: voi, label: VOI, params: {model_path: models_ckpt/voi_gbt.joblib, tau: 0.3}}

@@ -1,0 +1,32 @@
+# Writing-judge configuration used for the frozen collection. GPU placement
+# and tensor parallelism are deployment choices configured in Docker.
+# Run the two local judges separately, then merge their outputs:
+#   start_judge_solo qwen  → judge_writing --only-judge judge_qwen72b  → qwen.jsonl
+#   start_judge_solo llama → judge_writing --only-judge judge_llama70b → llama.jsonl
+#   merge_judgments --inputs qwen.jsonl llama.jsonl → judged.jsonl
+#
+# If a checkpoint is mirrored, update its served model name here and in the
+# corresponding Docker environment variable.
+
+endpoints:
+  judge_qwen72b:
+    base_url: http://vllm-judge-qwen:8000/v1
+    model: Qwen/Qwen2.5-72B-Instruct
+    supports_logprobs: false
+  judge_llama70b:
+    base_url: http://vllm-judge-llama:8000/v1
+    model: meta-llama/Llama-3.3-70B-Instruct
+    supports_logprobs: false
+  judge_api:
+    provider: anthropic
+    base_url: https://api.anthropic.com/v1
+    model: ${ANTHROPIC_JUDGE_MODEL}
+    api_key: ${ANTHROPIC_API_KEY}
+    supports_logprobs: false
+
+# The two local scores are aggregated by their median (their midpoint for two
+# members). Per-judge scores are retained. The API judge evaluates a deterministic
+# 15% calibration sample and is not included in the aggregate.
+judge_panel:
+  members: [judge_qwen72b, judge_llama70b]
+  api_calibration: {member: judge_api, fraction: 0.15}

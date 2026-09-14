@@ -1,0 +1,7 @@
+loop_type: code_repair
+rounds: 15
+temperature: 0.7
+max_tokens: 2048
+test_timeout: 5
+dataset: humaneval_plus
+task_cache: data/raw/code_tasks_32b_filtered.json

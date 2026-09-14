@@ -1,0 +1,5 @@
+loop_type: writer_critic
+rounds: 20
+temperature: 0.7
+max_tokens: 3072
+task_file: data/raw/writing_tasks_m2.jsonl

@@ -1,0 +1,8 @@
+# Single-judge configuration used by the initial collection.
+endpoints:
+  judge_llama70b:
+    base_url: http://vllm-judge:8000/v1
+    model: /models/Llama-3.3-70B-Instruct
+    supports_logprobs: false
+judge_panel:
+  members: [judge_llama70b]

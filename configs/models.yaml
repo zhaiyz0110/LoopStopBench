@@ -1,0 +1,56 @@
+# Public model configuration. Local endpoints refer to the service names in
+# docker/docker-compose.yml. Override model IDs in both files when using local
+# mirrors or alternative checkpoints.
+
+endpoints:
+  # Collection endpoints.
+  gen_8b:
+    base_url: http://vllm-8b:8000/v1
+    model: Qwen/Qwen3-8B
+    supports_logprobs: true
+  gen_32b:
+    base_url: http://vllm-32b:8000/v1
+    model: Qwen/Qwen2.5-32B-Instruct-AWQ
+    supports_logprobs: true
+
+  # Larger-model endpoint.
+  gen_72b:
+    base_url: http://vllm-72b:8000/v1
+    model: Qwen/Qwen2.5-72B-Instruct-AWQ
+    supports_logprobs: true
+
+  # Second local writing judge.
+  judge_llama70b:
+    base_url: http://vllm-judge:8000/v1
+    model: casperhansen/llama-3.3-70b-instruct-awq
+    supports_logprobs: false
+
+  # Native Anthropic endpoints. Supply the model IDs through environment variables.
+  frontier_api:
+    provider: anthropic
+    base_url: https://api.anthropic.com/v1
+    model: ${ANTHROPIC_FRONTIER_MODEL}
+    api_key: ${ANTHROPIC_API_KEY}
+    supports_logprobs: false
+  judge_api:
+    provider: anthropic
+    base_url: https://api.anthropic.com/v1
+    model: ${ANTHROPIC_JUDGE_MODEL}
+    api_key: ${ANTHROPIC_API_KEY}
+    supports_logprobs: false
+
+# Fixed generator and critic pairings.
+pairs:
+  code_small:     {generator: gen_8b}
+  code_mid:       {generator: gen_32b}
+  code_large:     {generator: gen_72b}          # 20% sample.
+  code_frontier:  {generator: frontier_api}     # 10% code-only sample.
+  writing_small:  {generator: gen_8b,  critic: gen_32b}
+  writing_mid:    {generator: gen_32b, critic: gen_8b}
+  qa_small:       {generator: gen_8b}
+  qa_mid:         {generator: gen_32b}
+
+# Two local writing judges, with an API judge on a 15% calibration sample.
+judge_panel:
+  members: [gen_72b, judge_llama70b]
+  api_calibration: {member: judge_api, fraction: 0.15}

@@ -1,0 +1,10 @@
+# ReAct question-answering loop.
+loop_type: react_qa
+rounds: 15
+temperature: 0.7
+max_tokens: 1024
+top_k: 3                   # Retrieved passages added per round.
+
+# HotpotQA distractor tasks with in-context BM25 retrieval.
+task_file: data/raw/qa_tasks_m2.jsonl
+# An injected search function can replace the built-in BM25 retriever.
