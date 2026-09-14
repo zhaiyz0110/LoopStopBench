@@ -1,0 +1,3 @@
+loop,target,point,lower95,upper95,delta,verdict,equiv,n,tasks,recoverable,recoverable_raw_probe,recoverable_lower95,recoverable_upper95,recoverable_verdict,raw_probe_point,total_regret_point,total_regret_lower95,total_regret_upper95,equiv_005,equiv_002,equiv_010
+m2_code_8b,total_regret,0.0198,0.01,0.036,0.02,inconclusive(CI 跨 Δ),False,353,118,0.0,0.0,0.0,0.0069,等价(上界<Δ),,,,,,,
+qa_m2,recoverable,0.0282,0.0018,0.0666,,inconclusive,,200,200,,,,,,0.0282,0.1157,0.0863,0.1614,False,False,True

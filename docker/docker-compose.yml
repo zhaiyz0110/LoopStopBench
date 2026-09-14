@@ -1,0 +1,134 @@
+# Public reference deployment. Defaults assume two CUDA GPUs; override the
+# LOOPSTOP_GPU_* and LOOPSTOP_MODEL_* variables for the target host.
+
+x-vllm-common: &vllm-common
+  image: ${LOOPSTOP_VLLM_IMAGE:-vllm/vllm-openai:v0.9.1}
+  restart: unless-stopped
+  ipc: host
+  environment:
+    HF_HOME: /hf
+  volumes:
+    - hf-cache:/hf
+  healthcheck:
+    test: ["CMD-SHELL", "curl -sf http://localhost:8000/health || exit 1"]
+    interval: 15s
+    timeout: 5s
+    retries: 60
+    start_period: 300s
+
+services:
+  vllm-8b:
+    <<: *vllm-common
+    profiles: [collect]
+    command: >
+      --model ${LOOPSTOP_MODEL_8B:-Qwen/Qwen3-8B}
+      --dtype bfloat16
+      --max-model-len 16384
+      --gpu-memory-utilization 0.92
+      --port 8000
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ["${LOOPSTOP_GPU_8B:-0}"]
+              capabilities: [gpu]
+
+  vllm-32b:
+    <<: *vllm-common
+    profiles: [collect]
+    command: >
+      --model ${LOOPSTOP_MODEL_32B:-Qwen/Qwen2.5-32B-Instruct-AWQ}
+      --quantization awq_marlin
+      --dtype float16
+      --max-model-len 16384
+      --gpu-memory-utilization 0.92
+      --port 8000
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ["${LOOPSTOP_GPU_32B:-1}"]
+              capabilities: [gpu]
+
+  vllm-72b:
+    <<: *vllm-common
+    profiles: [large]
+    command: >
+      --model ${LOOPSTOP_MODEL_72B:-Qwen/Qwen2.5-72B-Instruct-AWQ}
+      --quantization awq_marlin
+      --dtype float16
+      --tensor-parallel-size ${LOOPSTOP_LARGE_TP:-2}
+      --max-model-len 16384
+      --gpu-memory-utilization 0.92
+      --port 8000
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ["${LOOPSTOP_GPU_LARGE_0:-0}", "${LOOPSTOP_GPU_LARGE_1:-1}"]
+              capabilities: [gpu]
+
+  vllm-judge:
+    <<: *vllm-common
+    profiles: [judge]
+    command: >
+      --model ${LOOPSTOP_MODEL_JUDGE:-casperhansen/llama-3.3-70b-instruct-awq}
+      --quantization awq_marlin
+      --dtype float16
+      --tensor-parallel-size ${LOOPSTOP_JUDGE_TP:-2}
+      --max-model-len 16384
+      --gpu-memory-utilization 0.92
+      --port 8000
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ["${LOOPSTOP_GPU_JUDGE_0:-0}", "${LOOPSTOP_GPU_JUDGE_1:-1}"]
+              capabilities: [gpu]
+
+  harness:
+    build:
+      context: ..
+      dockerfile: docker/harness.Dockerfile
+    working_dir: /workspace
+    environment:
+      PYTHONPATH: /workspace/src
+      LOOPSTOP_ALLOW_CODE_EXECUTION: "0"
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      ANTHROPIC_FRONTIER_MODEL: ${ANTHROPIC_FRONTIER_MODEL:-}
+      ANTHROPIC_JUDGE_MODEL: ${ANTHROPIC_JUDGE_MODEL:-}
+      HF_HOME: /hf
+    volumes:
+      - ..:/workspace
+      - hf-cache:/hf
+    security_opt: [no-new-privileges:true]
+    pids_limit: 512
+    mem_limit: 16g
+
+  # Restricted boundary for generated-code evaluation. No host files, network,
+  # or credentials are exposed. A trusted controller must stage any inputs.
+  code-exec:
+    profiles: [exec]
+    build:
+      context: ..
+      dockerfile: docker/harness.Dockerfile
+    working_dir: /work
+    network_mode: none
+    read_only: true
+    tmpfs:
+      - /tmp:rw,nosuid,noexec,size=512m
+      - /work:rw,nosuid,noexec,size=1g
+    environment:
+      LOOPSTOP_ALLOW_CODE_EXECUTION: "1"
+    security_opt: [no-new-privileges:true]
+    cap_drop: [ALL]
+    pids_limit: 128
+    mem_limit: 4g
+
+volumes:
+  hf-cache:
+

@@ -1,0 +1,6 @@
+loop,n,lambda,mode,cost_scope,U_oracle,U_ovis_simple,U_ovis_backward,U_ovis_learned,learned_gbt,learned_simple,learned_fixed,U_ovis_used,ovis_method,U_best_heur,best_heur,info_gap,policy_gap,policy_gap_raw_probe,total_gap,recoverable_frac,mi_bits
+m2_code_8b,353,0.005,stop_and_select,generation-only,0.9131,0.9098,0.9109,0.9067,0.9052,0.9098,0.8702,0.9109,backward,0.9098,S2,0.0023,0.0011,0.0011,0.0034,0.3313,
+m2_code_32b,354,0.005,stop_and_select,generation-only,0.9324,0.9321,0.9323,0.9321,0.9282,0.9321,0.9192,0.9323,backward,0.9321,S2,0.0001,0.0002,0.0002,0.0003,0.7935,
+m2_writing_small_judged,200,0.005,stop_and_select,generation-only,0.5329,0.4995,0.505,0.4984,0.5018,0.494,0.4938,0.505,backward,0.4938,"OOF[f0:S1-n1,f1:S1-n3]",0.028,0.0112,0.0112,0.0392,0.2863,
+m2_writing_mid_judged,200,0.005,stop_and_select,generation-only,0.5988,0.5508,0.5434,0.5616,0.5616,0.5371,0.5435,0.5616,learned,0.5394,"OOF[f0:S1-n5,f1:S1-n8]",0.0372,0.0221,0.0221,0.0593,0.3728,
+qa_m2,200,0.005,stop_and_select,generation-only,0.3405,0.3153,0.3177,0.3153,0.3058,0.3153,0.2934,0.3177,backward,0.3153,S2,0.0228,0.0024,0.0024,0.0252,0.0946,

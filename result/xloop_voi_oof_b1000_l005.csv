@@ -1,0 +1,4 @@
+auroc_test,best_heur,delta,lam,loop,n,rec_oracle,rec_oracle_lo95,rec_oracle_up95,rec_transfer,rec_transfer_lo95,rec_transfer_up95,tasks,tau_transfer,u_heur,u_voi_oracle,u_voi_transfer,verdict_oracle,verdict_transfer
+0.8061,S2,0.02,0.005,code_repair,701,-0.0331,-0.0453,-0.0255,-0.0352,-0.0465,-0.0254,117,0.45,0.9289,0.8958,0.8937,等价(上界 -0.0255 < Δ=0.02) → 确认跨循环无 recoverable,等价(上界 -0.0254 < Δ=0.02) → 确认跨循环无 recoverable
+0.6234,"OOF[f0:S6,f1:S1-n3]",0.05,0.005,writer_critic,400,-0.0097,-0.0238,-0.0006,-0.0327,-0.0467,-0.0206,100,0.05,0.6055,0.5957,0.5728,等价(上界 -0.0006 < Δ=0.05) → 确认跨循环无 recoverable,等价(上界 -0.0206 < Δ=0.05) → 确认跨循环无 recoverable
+0.816,S2,0.02,0.005,react_qa,200,0.0002,-0.0247,0.0263,-0.0456,-0.0812,-0.0152,200,0.8,0.3035,0.3036,0.2579,"不确定(CI [-0.0247,0.0263] 跨 Δ=0.02, n 不足)",等价(上界 -0.0152 < Δ=0.02) → 确认跨循环无 recoverable

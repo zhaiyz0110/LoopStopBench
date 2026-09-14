@@ -1,0 +1,6 @@
+loop,n,lambda,mode,U_oracle,U_ovis_simple,U_ovis_backward,U_ovis_learned,learned_gbt,learned_simple,learned_fixed,U_ovis_used,ovis_method,U_best_heur,best_heur,info_gap,policy_gap,policy_gap_raw_probe,total_gap,recoverable_frac,mi_bits
+m2_code_8b,353,0.005,stop_at_last,0.9195,0.9098,0.9098,0.9052,0.9033,0.9098,0.7809,0.9098,backward,0.9098,S2,0.0098,0.0,0.0,0.0098,0.0,
+m2_code_32b,354,0.005,stop_at_last,0.935,0.9321,0.9321,0.9321,0.9164,0.9321,0.9174,0.9321,learned,0.9321,S2,0.0029,0.0,0.0,0.0029,0.0,
+m2_writing_small_judged,200,0.005,stop_at_last,0.7454,0.5912,0.5728,0.5816,0.5816,0.5776,0.5786,0.5816,learned,0.5704,"OOF[f0:S6,f1:S1-n3]",0.1639,0.0111,0.0111,0.175,0.0636,
+m2_writing_mid_judged,200,0.005,stop_at_last,0.74,0.6497,0.6481,0.6424,0.6503,0.6405,0.6432,0.6481,backward,0.6456,"OOF[f0:S1-n8,f1:S1-n5]",0.0919,0.0025,0.0025,0.0944,0.0261,
+qa_m2,200,0.005,stop_at_last,0.3709,0.3035,0.3015,0.2871,0.2759,0.2963,0.2716,0.3035,heuristic_floor,0.3035,S2,0.0675,0.0,-0.0019,0.0675,0.0,

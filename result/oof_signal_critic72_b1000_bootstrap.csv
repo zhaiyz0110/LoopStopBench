@@ -1,0 +1,2 @@
+loop,target,point,raw_probe_point,lower95,upper95,verdict,total_regret_point,total_regret_lower95,total_regret_upper95,equiv_005,equiv_002,equiv_010,n,tasks,cost_scope
+ws_r3,recoverable,0.0209,0.0209,0.0,0.0452,equivalent,0.1871,0.1748,0.2172,True,False,True,200,100,generation-only

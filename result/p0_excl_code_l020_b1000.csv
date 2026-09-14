@@ -1,0 +1,3 @@
+loop,n,lambda,mode,cost_scope,U_oracle,U_ovis_simple,U_ovis_backward,U_ovis_learned,learned_gbt,learned_simple,learned_fixed,U_ovis_used,ovis_method,U_best_heur,best_heur,info_gap,policy_gap,policy_gap_raw_probe,total_gap,recoverable_frac,mi_bits
+m2_code_8b,350,0.02,stop_at_last,generation-only,0.8701,0.8501,0.8501,0.849,0.8397,0.8501,0.7099,0.8501,backward,0.8501,S2,0.02,0.0,0.0,0.02,0.0,
+m2_code_32b,351,0.02,stop_at_last,generation-only,0.9382,0.9347,0.9347,0.9347,0.9051,0.9347,0.916,0.9347,backward,0.9347,S2,0.0036,0.0,0.0,0.0036,0.0,

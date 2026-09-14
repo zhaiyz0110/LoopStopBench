@@ -1,0 +1,2 @@
+loop,target,point,raw_probe_point,lower95,upper95,verdict,total_regret_point,total_regret_lower95,total_regret_upper95,equiv_005,equiv_002,equiv_010,n,tasks
+ws_r3,recoverable,0.0241,0.0241,0.0102,0.0548,inconclusive,0.1871,0.1749,0.2147,False,False,True,200,100

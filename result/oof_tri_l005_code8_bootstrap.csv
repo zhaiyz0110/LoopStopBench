@@ -1,0 +1,2 @@
+loop,target,point,lower95,upper95,delta,verdict,equiv,n,tasks,recoverable,recoverable_raw_probe,recoverable_lower95,recoverable_upper95,recoverable_verdict
+m2_code_8b,total_regret,0.0098,0.0038,0.0246,0.02,inconclusive(CI 跨 Δ),False,353,118,0.0,0.0,0.0,0.0,等价(上界<Δ)

@@ -1,0 +1,9 @@
+loop,member,label,recoverable,lo95,up95,delta,verdict,best_heur,n
+m2_writing_small_judged,gbt,utility,0.0132,-0.0137,0.0312,0.05,accept(上界<Δ),"OOF[f0:S6,f1:S1-n3]",200
+m2_writing_small_judged,gru-h8,utility,0.0145,-0.0146,0.0329,0.05,accept(上界<Δ),"OOF[f0:S6,f1:S1-n3]",200
+m2_writing_small_judged,gru-h16,utility,0.0194,-0.0071,0.0357,0.05,accept(上界<Δ),"OOF[f0:S6,f1:S1-n3]",200
+m2_writing_small_judged,gru-h32,utility,0.0328,0.0065,0.0462,0.05,accept(上界<Δ),"OOF[f0:S6,f1:S1-n3]",200
+m2_writing_small_judged,gru-h64,utility,0.0299,0.0028,0.0477,0.05,accept(上界<Δ),"OOF[f0:S6,f1:S1-n3]",200
+m2_writing_small_judged,gru-h128,utility,0.0214,-0.0062,0.0364,0.05,accept(上界<Δ),"OOF[f0:S6,f1:S1-n3]",200
+m2_writing_small_judged,lstm-h64,utility,0.0229,-0.0025,0.0399,0.05,accept(上界<Δ),"OOF[f0:S6,f1:S1-n3]",200
+m2_writing_small_judged,gru-h64+truth(bidi),utility,0.1613,0.1375,0.1766,0.05,falsify(下界>Δ),"OOF[f0:S6,f1:S1-n3]",200

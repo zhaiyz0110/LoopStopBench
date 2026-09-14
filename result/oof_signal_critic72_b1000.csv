@@ -1,0 +1,2 @@
+loop,n,lambda,mode,cost_scope,U_oracle,U_ovis_simple,U_ovis_backward,U_ovis_learned,learned_gbt,learned_simple,learned_fixed,U_ovis_used,ovis_method,U_best_heur,best_heur,info_gap,policy_gap,policy_gap_raw_probe,total_gap,recoverable_frac,mi_bits
+ws_r3,200,0.005,stop_at_last,generation-only,0.7454,0.5912,0.5726,0.5793,0.5793,0.5776,0.5786,0.5793,learned,0.5584,"OOF[f0:S1-n5,f1:S1-n3]",0.1662,0.0209,0.0209,0.1871,0.1117,0.0848

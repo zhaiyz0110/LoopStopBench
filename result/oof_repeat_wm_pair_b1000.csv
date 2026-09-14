@@ -1,0 +1,2 @@
+loop,field_a,field_b,raw_recoverable_a,raw_recoverable_b,paired_delta,lower95,upper95,margin,verdict,bootstrap_mean,n,tasks
+m2_writing_mid_rep8,score,score_rep8,0.0025,-0.0017,-0.0042,-0.021,0.0053,0.05,exploratory equivalence(CI 完全落在 ±Δ),-0.0019,200,100

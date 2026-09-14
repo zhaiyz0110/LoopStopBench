@@ -1,0 +1,9 @@
+loop,member,label,recoverable,lo95,up95,delta,verdict,best_heur,n
+m2_writing_mid_judged,gbt,utility,0.0073,-0.003,0.0255,0.05,accept(上界<Δ),"OOF[f0:S1-n8,f1:S1-n5]",200
+m2_writing_mid_judged,gru-h8,utility,0.0015,-0.0086,0.0164,0.05,accept(上界<Δ),"OOF[f0:S1-n8,f1:S1-n5]",200
+m2_writing_mid_judged,gru-h16,utility,-0.0068,-0.0187,0.0101,0.05,accept(上界<Δ),"OOF[f0:S1-n8,f1:S1-n5]",200
+m2_writing_mid_judged,gru-h32,utility,0.0033,-0.0081,0.0179,0.05,accept(上界<Δ),"OOF[f0:S1-n8,f1:S1-n5]",200
+m2_writing_mid_judged,gru-h64,utility,0.0032,-0.0079,0.0203,0.05,accept(上界<Δ),"OOF[f0:S1-n8,f1:S1-n5]",200
+m2_writing_mid_judged,gru-h128,utility,0.0083,-0.0017,0.0238,0.05,accept(上界<Δ),"OOF[f0:S1-n8,f1:S1-n5]",200
+m2_writing_mid_judged,lstm-h64,utility,0.0114,-0.0012,0.0242,0.05,accept(上界<Δ),"OOF[f0:S1-n8,f1:S1-n5]",200
+m2_writing_mid_judged,gru-h64+truth(bidi),utility,0.0868,0.075,0.1003,0.05,falsify(下界>Δ),"OOF[f0:S1-n8,f1:S1-n5]",200
