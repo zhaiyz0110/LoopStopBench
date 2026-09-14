@@ -1,0 +1,36 @@
+cff-version: 1.2.0
+message: "If you use LoopStopBench, please cite the associated manuscript."
+title: "LoopStopBench"
+type: software
+version: 0.1.0
+license: Apache-2.0
+repository-code: "https://github.com/zhaiyz0110/LoopStopBench"
+url: "https://github.com/zhaiyz0110/LoopStopBench"
+authors:
+  - family-names: Zhai
+    given-names: Yuanzhi
+    orcid: "https://orcid.org/0009-0000-3032-4223"
+  - family-names: Nie
+    given-names: Chaojun
+  - family-names: Wang
+    given-names: Guanxiang
+  - family-names: Wang
+    given-names: Zichen
+  - family-names: Zhou
+    given-names: Jun
+preferred-citation:
+  type: article
+  title: "Adaptive Stopping in Iterative LLM Loops: Measuring Regret and Recoverable Policy Gain"
+  authors:
+    - family-names: Zhai
+      given-names: Yuanzhi
+      orcid: "https://orcid.org/0009-0000-3032-4223"
+    - family-names: Nie
+      given-names: Chaojun
+    - family-names: Wang
+      given-names: Guanxiang
+    - family-names: Wang
+      given-names: Zichen
+    - family-names: Zhou
+      given-names: Jun
+  year: 2026

@@ -1,87 +1,194 @@
-# LoopStopBench Workspace
+# LoopStopBench
 
-对应研究计划 `../plan_1.md`（v1.0）+ 评审修订 `../review_plan_1.md`。
-论文工作题目：*To Loop or Not to Loop: Measuring, Benchmarking, and Learning Stopping Decisions in LLM Agent Loops*。
+Code, frozen trajectories, result tables, and figure-generation scripts for:
 
-## 运行环境
+> **Adaptive Stopping in Iterative LLM Loops: Measuring Regret and Recoverable Policy Gain**
 
-- 服务器：2 × A800 80G（无原生 FP8 → 32B/72B 走 AWQ INT4），Driver 575.57.08 / CUDA 12.9。
-- 一切实验在 Docker 容器中运行，容器定义见 [docker/](docker/)。
-- 本地模型经 vLLM 以 OpenAI 兼容接口暴露；harness 容器只通过 HTTP 访问模型，与 GPU 解耦。
+LoopStopBench measures how much stopping utility a policy using output-side
+visible history can recover beyond a tuned simple rule. It covers code repair,
+critic-driven writing, and retrieval question answering. Policies are evaluated
+by offline replay on the same full-horizon trajectories.
 
-## 目录结构（对应 plan_1 §13）
+Repository: https://github.com/zhaiyz0110/LoopStopBench
 
+## Primary finding
+
+Under the primary setting (`lambda=0.005`, generation-only token cost,
+`stop_at_last`), four of five family-specific targets exclude a material
+effect. Code-8B total regret remains inconclusive. See
+[`result/AUTHORITATIVE_RESULTS.md`](result/AUTHORITATIVE_RESULTS.md) for the
+frozen numbers and their allowed interpretation.
+
+## Repository contents
+
+```text
+LoopStopBench/
+|-- configs/                 Experiment, model, and replay configurations
+|-- data/                    Schema, checksums, and downloaded trajectories
+|-- docker/                  Public reference container configuration
+|-- result/
+|   |-- AUTHORITATIVE_RESULTS.md
+|   |-- RESULT_MANIFEST.md
+|   |-- *.csv                Frozen numerical results
+|   `-- figure/              Paper figures
+|-- scripts/                 Collection, replay, analysis, and figure entry points
+|-- src/loopstop/            Installable Python package
+|-- tests/                   Unit tests over synthetic trajectories
+|-- DATA_LICENSES.md         Data-specific rights and upstream restrictions
+|-- LICENSE                  Apache-2.0 license for original software
+|-- NOTICE                   Scope of the repository-level license
+|-- REPRODUCIBILITY.md       Detailed reproduction commands and scope
+|-- THIRD_PARTY_NOTICES.md   Benchmark, model, and dependency attribution
+`-- CITATION.cff            Machine-readable citation metadata
 ```
-workspace/
-├── configs/            # 全部实验由 yaml 驱动（§13）
-│   ├── models.yaml     #   模型矩阵（review §2.2）：8B/32B-AWQ/72B-AWQ + 裁判 + API
-│   ├── code_repair.yaml / writer_critic.yaml / react_qa.yaml   # 三个循环（§5.1–5.3）
-│   └── replay.yaml     #   停止策略基准 S1–S8 + λ 档位（§7）
-├── docker/             # vLLM serving + harness 容器（compose profiles 管理 GPU 占用）
-├── src/loopstop/
-│   ├── schema.py       # §5.5 JSONL schema；VisibleHistory 接口隔离隐藏真值
-│   ├── llm.py          # OpenAI 兼容客户端（vLLM / API 统一），带 logprob 采集
-│   ├── loops/          # §5：三个 harness；base.py 强制跑满 T 轮全程落盘
-│   ├── policies/       # §7.1：S1–S8 统一接口 π(h_t)→{continue,stop} + VOI 策略
-│   ├── replay/         # §4.2 + §7：离线回放、效用 U、oracle、regret、bootstrap CI
-│   ├── analysis/       # §4.3 轨迹分型 + §6.1 测量指标
-│   └── estimator/      # §8：六组特征、标签构造、按 task_id 划分、GBT/MLP 训练
-├── scripts/            # collect / judge_writing / replay_eval / analyze / smoke_test
-├── tests/              # 合成轨迹上的单元测试（容器内 pytest 运行）
-└── data/               # 轨迹 JSONL（不入 git），schema 说明见 data/README.md
-```
 
-## 快速开始（服务器上）
+## Installation
+
+Python 3.10 or later is required.
 
 ```bash
-cd workspace/docker
-
-# 1) 起采集档模型（8B 在 GPU0，32B-AWQ 在 GPU1）
-docker compose --profile collect up -d
-
-# 2) 连通性冒烟测试
-docker compose run --rm harness python scripts/smoke_test.py
-
-# 3) 单元测试
-docker compose run --rm harness pytest -q
-
-# 4) Pilot（M1-W3：每循环 30 任务，跑满轮数）
-docker compose run --rm harness python scripts/collect.py \
-    --loop code_repair --pair code_small --seeds 0 1 2 --limit 30 \
-    --out data/trajectories/pilot_code_small.jsonl
-
-# 5) 分型与测量指标（M1-W3 pilot 报告的输入）
-docker compose run --rm harness python scripts/analyze.py \
-    --traj data/trajectories/pilot_code_small.jsonl
-
-# 6) 停止策略离线回放（同一批轨迹评所有策略，§5.5 的 O(1) 设计）
-docker compose run --rm harness python scripts/replay_eval.py \
-    --traj data/trajectories/pilot_code_small.jsonl --out results/
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install -e ".[full,dev]"
+python -m pytest -q
 ```
 
-72B 抽样验证 / 裁判团阶段需独占双卡，与采集档互斥：
+On Windows PowerShell, activate the environment with
+`.venv\Scripts\Activate.ps1`.
+
+The Docker deployment is optional. It is documented in
+[`docker/README.md`](docker/README.md). GPU-backed services are required only
+for new trajectory collection or critic rescoring; frozen replay, bootstrap
+analysis, and figure generation are CPU workloads.
+
+Embedding features default to the public model ID
+`sentence-transformers/all-MiniLM-L6-v2`. Collection accepts
+`--embedding-model MODEL_ID_OR_PATH`; feature augmentation accepts the same
+option and retains `--model` as a compatibility alias. The
+`LOOPSTOP_EMBEDDING_MODEL` environment variable can supply a site-specific
+cache path without placing private paths in source control.
+
+## Frozen data
+
+Each JSONL row is one round. The schema is defined in
+[`src/loopstop/schema.py`](src/loopstop/schema.py) and summarized in
+[`data/README.md`](data/README.md).
+
+The nine JSONL files total approximately 281.8 MiB and are intentionally not
+stored as ordinary Git objects. Download the versioned trajectory archive from
+the repository's [GitHub Releases](https://github.com/zhaiyz0110/LoopStopBench/releases),
+extract the files directly into `data/`, and verify them against
+[`data/DATA_MANIFEST.sha256`](data/DATA_MANIFEST.sha256). The release asset for
+version 0.1.0 is named `loopstopbench-trajectories-v0.1.0.zip`; its archive
+checksum is recorded in
+[`data/RELEASE_ASSET.sha256`](data/RELEASE_ASSET.sha256). The archive contains
+`LoopStopBench-data-v0.1.0/data/`; copy the nine JSONL files from that directory
+into the repository's `data/` directory after extraction.
+
+| File | Purpose | Raw trajectories/tasks | Final analysis scope |
+|---|---|---:|---|
+| `m2_code_8b.jsonl` | Code repair, 8B generator | 353/118 | 350/117 after exclusion |
+| `m2_code_32b.jsonl` | Code repair, 32B generator | 354/118 | 351/117 after exclusion |
+| `m2_writing_small_judged.jsonl` | Writing, 8B author and 32B critic | 200/100 | all |
+| `m2_writing_mid_judged.jsonl` | Writing, 32B author and 8B critic | 200/100 | all |
+| `qa_m2.jsonl` | Retrieval QA | 200/200 | all |
+| `m2_writing_small_rep8_1.jsonl` | Writing-small repeated-query signals | 200/100 | robustness only |
+| `m2_writing_mid_rep8.jsonl` | Writing-mid repeated-query signals | 200/100 | robustness only |
+| `ws_r3.jsonl` | Writing-small critic-scale signals | 200/100 | robustness only |
+| `ws_r4.jsonl` | Writing-small pairwise-query signals | 200/100 | robustness only |
+
+### Required code validity exclusion
+
+All final code analyses exclude `Mbpp_793` because its cached hidden-test set
+is empty. The raw archives retain its three trajectories per model arm for
+provenance. Every command that analyzes code must therefore include:
+
+```text
+--exclude-tasks Mbpp_793
+```
+
+The corrected code result files begin with `result/p0_excl_`. Pre-correction
+code rows remain in some mixed historical CSV files and must not be reported.
+The authoritative mapping is in
+[`result/RESULT_MANIFEST.md`](result/RESULT_MANIFEST.md).
+
+## Reproduce the primary analysis
+
+The following command refits the tested visible policy class inside the
+task-clustered bootstrap and evaluates all five primary cells:
 
 ```bash
-docker compose --profile collect down
-docker compose --profile large up -d    # 72B-AWQ TP=2
-docker compose --profile judge up -d    # Llama-70B-AWQ TP=2（写作真值裁判）
+mkdir -p reproduced
+python scripts/oracle_visible.py \
+  --traj data/m2_code_8b.jsonl \
+         data/m2_code_32b.jsonl \
+         data/m2_writing_small_judged.jsonl \
+         data/m2_writing_mid_judged.jsonl \
+         data/qa_m2.jsonl \
+  --lambda 0.005 \
+  --mode stop_at_last \
+  --method all \
+  --bootstrap 1000 \
+  --force-recoverable \
+  --exclude-tasks Mbpp_793 \
+  --seed 0 \
+  --out reproduced/primary_l005.csv
 ```
 
-## 与里程碑的对应（plan_1 §10）
+Expected primary values are:
 
-| 里程碑 | 本仓库需完成的事 |
-|---|---|
-| M1-W1 | 填 `loops/code_repair.py` 的两处 TODO（EvalPlus 任务适配、真值测试执行），schema 已定稿 |
-| M1-W2 | 填 `loops/react_qa.py` 搜索后端、`loops/writer_critic.py` 已可跑（裁判见 judge_writing.py） |
-| M1-W3 | `collect.py` 跑三循环 pilot；`analyze.py` 出初步分型统计 |
-| M1-W4 | go/no-go：`analyze.py` 的 final≠best 占比 ≥10%（§10.3） |
-| M2 | 全量采集（compose collect 档），冻结 `data/trajectories/` 为 v1 |
-| M3 | `replay_eval.py` 出 regret 表与 Pareto 数据；测量部分挂 arXiv（评审：默认执行） |
-| M4 | `estimator/train.py` + `policies/voi.py`；leave-one-loop-type-out 泛化 |
+| Cell | Formal target | Point | One-sided 95% endpoints | Margin | Verdict |
+|---|---|---:|---|---:|---|
+| code-8B | Total regret | 0.0099 | [0.0043, 0.0262] | 0.02 | Inconclusive |
+| code-32B | Total regret | 0.0029 | [0.0011, 0.0173] | 0.02 | Equivalent |
+| writing-small | Recoverable | 0.0111 | upper 0.0314 | 0.05 | Equivalent |
+| writing-mid | Recoverable | 0.0025 | upper 0.0220 | 0.05 | Equivalent |
+| QA | Recoverable | 0.0000 (raw -0.0019) | upper 0.0172 | 0.02 | Equivalent |
 
-## 设计不变量（改代码前必读）
+To regenerate the paper figures from the frozen CSV files:
 
-1. **采集期永不早停**：`loops/base.py` 强制跑满 T 轮；停止策略只在离线回放中作用（§5.5）。
-2. **隐藏真值接口隔离**：策略只能拿到 `VisibleHistory`，类型层面不含 `hidden_truth`（§4.1 R 不可见）。
-3. **同一批轨迹评所有策略**：策略评测一律走 `replay/`，不重新采集。
-4. **一切超参进 yaml**：策略调参只动 `configs/replay.yaml`，在验证集（20%，按 task_id 划分）上调。
+```bash
+python scripts/make_figures.py \
+  --results-dir result \
+  --p0-results-dir result \
+  --out-dir reproduced/figures
+```
+
+Additional model-class, transfer, signal, cost, and return-rule commands are
+listed in [`REPRODUCIBILITY.md`](REPRODUCIBILITY.md).
+
+## Reproduction scope
+
+The release supports numerical replay and regeneration of the reported tables
+and figures from frozen trajectories. It does not promise bitwise regeneration
+of the trajectories from raw source tasks: original task caches are not
+redistributed, some API model versions are externally hosted, and complete
+package/GPU timing snapshots were not retained. New collection runs may
+therefore differ from the frozen release. This is a frozen-replay release, not
+an end-to-end archival snapshot of trajectory collection.
+
+Stopping policies must access trajectories through `VisibleHistory`; hidden
+quality is present for evaluation but is unavailable to policies at inference
+time. Collection always runs to the full horizon, and stopping policies only
+truncate trajectories during offline replay.
+
+## Security
+
+The code-repair harness evaluates generated Python. Direct subprocess execution
+is disabled by default and is not a security sandbox. Read
+[`docker/README.md`](docker/README.md) before enabling code execution. Do not
+run generated code on a workstation or in the networked collection container.
+
+## License and attribution
+
+Original source code and documentation are licensed under Apache-2.0. Dataset
+and artifact terms differ by file and upstream source; read
+[`DATA_LICENSES.md`](DATA_LICENSES.md) and
+[`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) before redistribution.
+
+## Citation
+
+Use [`CITATION.cff`](CITATION.cff) or cite the associated manuscript. Citation
+metadata should be updated with the article DOI and final bibliographic details
+after publication.

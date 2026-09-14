@@ -2,6 +2,15 @@
 name = "loopstop"
 version = "0.1.0"
 description = "LoopStopBench: measuring, benchmarking and learning stopping decisions in LLM agent loops"
+readme = "README.md"
+license = {file = "LICENSE"}
+authors = [
+    {name = "Yuanzhi Zhai"},
+    {name = "Chaojun Nie"},
+    {name = "Guanxiang Wang"},
+    {name = "Zichen Wang"},
+    {name = "Jun Zhou"},
+]
 requires-python = ">=3.10"
 dependencies = [
     "requests>=2.31",
@@ -9,11 +18,14 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-# harness 容器安装 full；核心库与测试只依赖标准库 + requests/pyyaml
+# The full extra covers frozen analysis, model-class runs, and figures.
 full = [
     "numpy>=1.26",
+    "scipy>=1.12",
+    "matplotlib>=3.8",
     "scikit-learn>=1.4",
     "lightgbm>=4.3",
+    "torch>=2.2",
     "sentence-transformers>=3.0",
     "evalplus>=0.3.1",
     "datasets>=2.19",

@@ -3,6 +3,7 @@ __pycache__/
 *.egg-info/
 .pytest_cache/
 data/trajectories/
+data/*.jsonl
 data/raw/
 data/judgments/
 results/
